@@ -1,0 +1,476 @@
+<meta charset="UTF-8">
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: sans-serif;
+  line-height: 1.4;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid__col-sizer,
+.photo-item {
+  width: 32%;
+}
+
+.grid__gutter-sizer {
+  width: 2%;
+}
+
+.photo-item {
+  margin-bottom: 10px;
+  float: left;
+}
+
+.photo-item__image {
+  display: block;
+  max-width: 100%;
+}
+
+.photo-item__caption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  margin: 0;
+}
+
+.photo-item__caption a {
+  color: white;
+  font-size: 0.8em;
+  text-decoration: none;
+}
+
+.page-load-status {
+  display: none; /* hidden by default */
+  padding-top: 20px;
+  border-top: 1px solid #DDD;
+  text-align: center;
+  color: #777;
+}
+
+/* loader ellips in separate pen CSS */
+body{
+  padding-top: 7px;
+}
+
+.search-container{
+  width: 490px;
+  display: block;
+  margin: 0 auto;
+}
+
+input.search-bar{
+  position: relative;
+  text-align:center;
+  margin: 0 auto;
+  width: 100%;
+  height: 45px;
+  padding: 0 20px;
+  font-size: 1rem;
+  border: 1px solid #D0CFCE;
+  outline: none;
+  &:focus{
+    border: 1px solid #008ABF;
+    transition: 0.35s ease;
+    color: #008ABF;
+    &::-webkit-input-placeholder{
+      transition: opacity 0.45s ease; 
+  	  opacity: 0;
+     }
+    &::-moz-placeholder {
+      transition: opacity 0.45s ease; 
+  	  opacity: 0;
+     }
+    &:-ms-placeholder {
+     transition: opacity 0.45s ease; 
+  	 opacity: 0;
+     }    
+   }
+ }
+
+ .slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; 
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+// Mixin
+.center-block() {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Usage
+.container {
+  width: 940px;
+  .center-block();
+}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+
+<!--Plugin CSS file with desired skin-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css"/>
+
+<!--jQuery-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!--Plugin JavaScript file-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js"></script>
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="tingle.min.css">
+<script src="tingle.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<br>
+  <form class="container search-container">
+    <input type="text" id="search-bar" class="search-bar" class="search-bar" placeholder="Search for users and click on ratings">
+  </form>
+
+<br>
+
+<input type="text" class="js-range-slider" name="my_range" value="" />
+
+<br>
+
+<div class="grid">
+  <div class="grid__col-sizer"></div>
+  <div class="grid__gutter-sizer"></div>
+</div>
+
+<div class="page-load-status">
+  <div class="loader-ellips infinite-scroll-request">
+    <span class="loader-ellips__dot"></span>
+    <span class="loader-ellips__dot"></span>
+    <span class="loader-ellips__dot"></span>
+    <span class="loader-ellips__dot"></span>
+  </div>
+  <p class="infinite-scroll-last">End of content</p>
+  <p class="infinite-scroll-error">No more pages to load</p>
+</div>
+</body>
+
+
+<!-- .photo-item template HTML -->
+<script type="text/html" id="photo-item-template">
+  <div onclick="initRatingModal('{{creator}}');" class="photo-item">
+    <img class="photo-item__image" src="https://picsum.photos/700/700" alt="{{value}} points {{following}} by {{creator}}" />
+    <p style="background-color: #FFFFFF" class="photo-item__caption">
+      <b>{{value}}</b> points to <b>{{following}}</b> by <b>{{creator}}</b>
+    </p>
+  </div>
+</script>
+
+
+<script>
+let apiUrl = 'localhost:8001';
+
+let getProfile  = (token, callback) => {
+    $.ajax({
+        url: 'http://'+ apiUrl +'/api/profile/',
+        headers: {
+            Authorization: 'Token ' + token
+        },
+        success: callback
+    });
+}
+
+var accessToken;
+var authorization = new tingle.modal({
+    footer: false,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    cssClass: ['custom-class-1', 'custom-class-2'],
+    onOpen: function() {
+        $("#auth-input").focus();
+    },
+    onClose: function() {
+    },
+    beforeClose: function() {
+        // here's goes some logic
+        // e.g. save content before closing the modal
+        return true; // close the modal
+    }
+});
+authorization.setContent(`
+    <div class="center-block">
+        <form class="container auth-container">
+            <br>
+            <div class="row justify-content-md-center">
+                        
+              <div class="col-12">
+                <input id="auth-input" type="text" class="search-bar" placeholder="Write your name and press Enter">
+              </div>
+              <div class="col-12"><br></div>
+              <div class="col-12">
+                <input class="col-12" type="submit" value="Enter">
+              </div>
+            </div>
+        </form>
+    </div>
+`)
+authorization.open();
+
+var ratingModal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    cssClass: ['custom-class-1', 'custom-class-2'],
+    onOpen: function() {
+    },
+    onClose: function() {
+    },
+    beforeClose: function() {
+        // here's goes some logic
+        // e.g. save content before closing the modal
+        return true; // close the modal
+    }
+});
+ratingModal.addFooterBtn('Rate', 'tingle-btn tingle-btn--primary', function() {
+    if (accessToken === undefined) {
+        ratingModal.close();
+        authorization.open();
+    } else {
+        $.ajax({
+            type: 'POST',
+            headers: {
+                Authorization: 'Token ' + accessToken
+            },
+            url: 'http://'+ apiUrl +'/api/rate/',
+            data: {
+                'user_id': $('#blogger').text(),
+                'value': $('#myRate').val()
+            },
+            success: (r) => {
+                if ($('#myRate').val() > value_max) {
+                    value_max = $('#myRate').val();
+                }
+                
+                infScroll.destroy();
+                $('.photo-item').remove();
+                search = $(this).val().toLowerCase();
+                
+                infScroll = getInfScroll(0, search, value_min, value_max)
+                
+                $(".js-range-slider").data("ionRangeSlider").update({
+                    to: value_max,
+                    max: value_max
+                });
+                
+                ratingModal.close();
+            }
+        });
+    }
+});
+
+let initRatingModal = (e) => {
+    if (accessToken === undefined) {
+        ratingModal.close();
+        authorization.open();
+    } else {
+        ratingModal.setContent(`
+            <div class="row">
+                <div class="col-12">
+                    <h1 id="blogger" >${e}</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <input type="number" id="myRate" value="5">
+                </div>
+            </div>
+        `);
+        ratingModal.open();
+    }
+};
+
+
+
+
+var rating = 0;
+var username = 'anon';
+$(".auth-container").on("submit", () => {
+    $.ajax({
+        type: 'POST',
+        url: 'http://'+ apiUrl +'/api/auth/',
+        data: {
+            login: $('#auth-input').val()
+        },
+        success: (r) => {
+            accessToken = r.token;
+            getProfile(accessToken, (profile) => {
+                rating = profile.rating;
+                username = profile.username;
+                $(".search-bar").attr("placeholder", "Search for users and click on ratings, " + username + "").val("").focus().blur();
+            });
+            authorization.close();
+        }
+    });
+    return false;
+})
+
+var search = '';
+var value_min = 0;
+var value_max = 10;
+let getInfScroll = (page, search = '', from = null, to = null) => {
+    var msnry = new Masonry( '.grid', {
+        itemSelector: '.photo-item',
+        columnWidth: '.grid__col-sizer',
+        gutter: '.grid__gutter-sizer',
+        percentPosition: true,
+        stagger: 30,
+        // nicer reveal transition
+        visibleStyle: { transform: 'translateY(0)', opacity: 1 },
+        hiddenStyle: { transform: 'translateY(100px)', opacity: 0 },
+    });
+    // use element to turn HTML string into elements
+    let iScroll =  new InfiniteScroll( '.grid', {
+        path: function() {
+            let url = 'http://'+ apiUrl +'/api/ratings/?ordering=-created&page=' + this.pageIndex + '&search=' + search;
+            if (from) {
+                url += '&value_min=' + from;
+            }
+            if (to) {
+                url += '&value_max=' + to;
+            }
+            return url;
+        },
+        // load response as flat text
+        responseType: 'text',
+        outlayer: msnry,
+        status: '.page-load-status',
+        history: false,
+    });
+    var proxyElem = document.createElement('div');
+    iScroll.on( 'load', function( response ) {
+        // parse response into JSON data
+        var data = JSON.parse( response );
+        data = data['results'];
+        // compile data into HTML
+        var itemsHTML = data.map( getItemHTML ).join('');
+        // convert HTML string into elements
+        proxyElem.innerHTML = itemsHTML;
+        // append item elements
+        var items = proxyElem.querySelectorAll('.photo-item');
+        imagesLoaded( items, function() {
+            iScroll.appendItems( items );
+            msnry.appended( items );
+        });
+    });
+    iScroll.loadNextPage();
+    return iScroll;
+}
+
+var infScroll;
+
+$(document).ready(function(){
+
+    $("#search-bar").on("keyup", function() {
+        infScroll.destroy();
+        $('.photo-item').remove();
+        search = $(this).val().toLowerCase();
+        infScroll = getInfScroll(0, search, value_min, value_max)
+    });
+
+    $("#search-bar").on("submit", () => {
+        return false;
+    });
+
+    $(".js-range-slider").ionRangeSlider({
+        type: "double",
+        min: 0,
+        max: value_max,
+        from: 0,
+        to: value_max,
+        grid: true,
+        onFinish: (data) => {
+            value_min = data.from;
+            value_max = data.to;
+
+            infScroll.destroy();
+            $('.photo-item').remove();
+            infScroll = getInfScroll(1, search, value_min, value_max)
+        },
+    });
+
+    $.ajax({
+      url: 'http://'+ apiUrl +'/api/ratings/max/',
+      success: (response) => {
+          value_max = response.value__max;
+
+          $(".js-range-slider").data("ionRangeSlider").update({
+              to: value_max,
+              max: value_max
+          });
+          
+          infScroll = getInfScroll(0, search, value_min, value_max);
+      }
+    })  
+});
+
+
+//------------------//
+var itemTemplateSrc = document.querySelector('#photo-item-template').innerHTML;
+
+function getItemHTML( photo ) {
+  return microTemplate( itemTemplateSrc, photo );
+}
+
+// micro templating, sort-of
+function microTemplate( src, data ) {
+  // replace {{tags}} in source
+  return src.replace( /\{\{([\w\-_\.]+)\}\}/gi, function( match, key ) {
+    // walk through objects to get value
+    var value = data;
+    key.split('.').forEach( function( part ) {
+      value = value[ part ];
+    });
+    return value;
+  });
+}
+
+</script>
+</html> 
