@@ -3,6 +3,7 @@
 Interview task for blogger Mitroshina
 
 API: https://api.danylo.website/api/ratings/
+
 Source: https://github.com/teoluna/mitroshina-case
 
 
