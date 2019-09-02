@@ -1,6 +1,8 @@
 # mitroshina-case
 Interview task for blogger Mitroshina
 
+API: https://api.danylo.website/api/ratings/
+
 Aug 7, 2019 4:13:24 PM
 Митрошина негодует
 56K
