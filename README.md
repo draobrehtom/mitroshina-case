@@ -1,7 +1,12 @@
 # mitroshina-case
+
 Interview task for blogger Mitroshina
 
 API: https://api.danylo.website/api/ratings/
+Source: https://github.com/teoluna/mitroshina-case
+
+
+# job offer
 
 Aug 7, 2019 4:13:24 PM
 Митрошина негодует
